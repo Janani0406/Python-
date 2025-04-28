@@ -1,0 +1,72 @@
+class Solution(object):
+    def numberToWords(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        if not num:
+            return 'Zero'
+        teens_to_str = {
+            11: 'Eleven',
+            12: 'Twelve',
+            13: 'Thirteen',
+            14: 'Fourteen',
+            15: 'Fifteen',
+            16: 'Sixteen',
+            17: 'Seventeen',
+            18: 'Eighteen',
+            19: 'Nineteen'
+        }
+        tens_to_str = {
+            10:'Ten',
+            20: 'Twenty',
+            30: 'Thirty',
+            40: 'Forty',
+            50: 'Fifty',
+            60: 'Sixty',
+            70: 'Seventy',
+            80: 'Eighty',
+            90: 'Ninety'
+        }
+        dig_to_str = {
+            0: 'Zero',
+            1: 'One',
+            2: 'Two',
+            3: 'Three',
+            4: 'Four', 
+            5: 'Five',
+            6: 'Six',
+            7: 'Seven',
+            8: 'Eight',
+            9: 'Nine'
+        }
+        def num_to_str(num):
+            hun_str = ""
+            if num//100:
+                hun_str += dig_to_str[num//100] + " Hundred"
+                num = num%100
+            if (num>10 and num<20):
+                hun_str += ' '+teens_to_str[num]
+                return hun_str
+            if num//10:
+                hun_str += " "+ tens_to_str[num//10*10] 
+                num = num%10
+            if num:
+                hun_str += " "+ dig_to_str[num]
+            return hun_str
+
+
+
+        count = {1000000000:"Billion", 1000000:"Million", 1000: "Thousand"}
+        divisors = [1000000000, 1000000, 1000, 0]
+        final = ""
+        for d in divisors:
+            if d==0:
+                final+= ' '+num_to_str(num)
+            else:
+                if num//d:
+                    final+= ' '+num_to_str(num//d) + ' ' + count[d]
+                    num = num%d
+        return ' '.join(final.split())
+
+        
