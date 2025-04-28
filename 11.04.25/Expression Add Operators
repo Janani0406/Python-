@@ -1,0 +1,35 @@
+class Solution(object):
+    def addOperators(self, num, target):
+        """
+        :type num: str
+        :type target: int
+        :rtype: List[str]
+        """
+        l = len(num)
+        ans = []
+        
+        def calc(ind, value, prev, expr):
+            if ind == l:
+                if value == target:
+                    ans.append(expr)
+                return
+            
+            for i in range(ind, l):
+                
+                if i != ind and num[ind] == '0':
+                    break
+                
+                curr_str = num[ind:i + 1]
+                curr_num = int(curr_str)
+                
+                if ind == 0:
+                    calc(i + 1, curr_num, curr_num, curr_str)
+                else:
+                    
+                    calc(i + 1, value + curr_num, curr_num, expr + '+' + curr_str)
+                    
+                    calc(i + 1, value - curr_num, -curr_num, expr + '-' + curr_str)
+                    calc(i + 1, value - prev + prev * curr_num, prev * curr_num, expr + '*' + curr_str)
+
+        calc(0, 0, 0, "")
+        return ans
