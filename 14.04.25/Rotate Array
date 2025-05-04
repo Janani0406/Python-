@@ -1,0 +1,13 @@
+class Solution(object):
+    def rotate(self, nums, k):
+        res1 = []
+        res2 = []
+        n = len(nums)
+        k = k % n
+        for i in range(len(nums)):
+            if i < n - k:
+                res1.append(nums[i])
+            else:
+                res2.append(nums[i])
+        nums[:] = res2 + res1
+        return nums
