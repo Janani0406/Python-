@@ -1,0 +1,25 @@
+class Solution:
+    def findRedundantConnection(self, edges):
+        # Helper function for finding the root of a node with path compression
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])  # Path compression
+            return parent[x]
+        
+        # Helper function for unioning two sets
+        def union(x, y):
+            rootX = find(x)
+            rootY = find(y)
+            if rootX == rootY:
+                return False  # Cycle detected
+            parent[rootY] = rootX  # Union the sets
+            return True
+        
+        # Initialize parent array for Union-Find
+        n = len(edges)
+        parent = list(range(n + 1))  # Nodes are labeled from 1 to n
+        
+        # Process each edge
+        for u, v in edges:
+            if not union(u, v):  # If union fails, it means a cycle is detected
+                return [u, v]
