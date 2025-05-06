@@ -1,0 +1,17 @@
+	d={}
+	for src,des in tickets:
+		if src not in d:
+			d[src]=[des]
+		else:
+			d[src].append(des)
+	for src in d.keys():
+		d[src].sort(reverse=True)
+	stack=["JFK"]
+	res=[]
+	while len(stack)!=0:
+		node=stack[-1]
+		if node in d and len(d[node])>0:
+			stack.append(d[node].pop())
+		else:
+			res.append(stack.pop())
+	return res[::-1]
