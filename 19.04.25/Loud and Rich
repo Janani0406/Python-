@@ -1,0 +1,45 @@
+class Solution(object):
+    def loudAndRich(self, richer, quiet):
+        """
+        :type richer: List[List[int]]
+        :type quiet: List[int]
+        :rtype: List[int]
+        """
+        from collections import defaultdict, deque
+        
+        lr = len(richer)
+        lq = len(quiet)
+        topo = []
+        indeg = defaultdict(int)
+        q = deque()
+        adj = defaultdict(list)
+        
+        # Build the adjacency list and in-degree array
+        for a, b in richer:
+            indeg[b] += 1
+            adj[a].append(b)
+
+        # Initialize the queue with nodes having zero in-degree
+        for i in range(lq):
+            if indeg[i] == 0:
+                q.append(i)
+        
+        # Perform topological sorting
+        while q:
+            person = q.popleft()
+            topo.append(person)
+            for neighbor in adj[person]:
+                indeg[neighbor] -= 1
+                if indeg[neighbor] == 0:
+                    q.append(neighbor)
+        
+        # Initialize the result array with the person's index
+        ans = list(range(lq))
+        
+        # Propagate the quietness information
+        for person in topo:
+            for neighbor in adj[person]:
+                if quiet[ans[person]] < quiet[ans[neighbor]]:
+                    ans[neighbor] = ans[person]
+        
+        return ans
