@@ -1,0 +1,8 @@
+class Solution:
+    def smallestTrimmedNumbers(self, nums, queries):
+        res = [-1] * len(queries)
+        lengths = set(elem[1] for elem in queries)
+        cache = {l: sorted([(num[-l:], i) for i, num in enumerate(nums)]) for l in lengths}
+        for i, (j, k) in enumerate(queries):
+            res[i] = cache[k][j - 1][1]
+        return res
