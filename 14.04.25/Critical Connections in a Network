@@ -1,0 +1,34 @@
+class Solution:
+    def criticalConnections(self, n: int, connections: List[List[int]]) -> List[List[int]]:
+        g=[[] for _ in range(n)]
+        ids=[inf] * n
+        lows=[inf] *n
+        for at,to in connections:
+            g[at].append(to)
+            g[to].append(at)
+        
+        bridges=[]
+        id_counter=0
+        def dfs(at,parent):
+            nonlocal id_counter
+            ids[at]=id_counter
+            id_counter+=1
+            lows[at]=ids[at]
+            #print(at)
+            for to in g[at]:
+                if to==parent:
+                    continue
+                
+                if ids[to]==inf:
+                    print(at,to)
+                    dfs(to,at)
+                    lows[at]=min(lows[at],lows[to])
+                    if ids[at]<lows[to]:
+                        bridges.append([at,to])
+                else:
+                    lows[at]=min(lows[at],ids[to])
+        for i in range(n):
+            if ids[i]==inf:
+                dfs(i,-1)
+        
+        return bridges
