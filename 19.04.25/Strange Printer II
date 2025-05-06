@@ -1,0 +1,11 @@
+        minRow,maxRow, minCol,maxCol,G, C  = defaultdict(lambda: float("inf")), defaultdict(lambda: float("-inf")), defaultdict(lambda: float("inf")), defaultdict(lambda: float("-inf")), defaultdict(list), defaultdict(lambda: 0)   
+        for i,j in product(range(len(targetGrid)), range(len(targetGrid[0]))): minRow[targetGrid[i][j]], maxRow[targetGrid[i][j]], minCol[targetGrid[i][j]], maxCol[targetGrid[i][j]]  = min(minRow[targetGrid[i][j]], i), max(maxRow[targetGrid[i][j]], i), min(minCol[targetGrid[i][j]], j), max(maxCol[targetGrid[i][j]], j)
+        for color in minRow:
+            for i,j in filter(lambda u: targetGrid[u[0]][u[1]] != color,  product(range(minRow[color], maxRow[color]+1),range(minCol[color],maxCol[color]+1))): G[targetGrid[i][j]].append(color)
+        def dfs(u):
+            if C[u]: return C[u] == 2
+            C[u] = 1
+            if any(not dfs(v) for v in G[u]): return False
+            C[u] = 2
+            return True
+        return all(dfs(u) for u in minRow)
