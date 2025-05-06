@@ -1,0 +1,37 @@
+class Solution(object):
+    def calcEquation(self, equations, values, queries):
+        """
+        :type equations: List[List[str]]
+        :type values: List[float]
+        :type queries: List[List[str]]
+        :rtype: List[float]
+        """
+        ###first create storage for values
+
+        lookup = collections.defaultdict(dict)
+        for(x,y), value in zip(equations,values):
+            lookup[x][y] = value
+            lookup[y][x] = 1.0/value
+
+        ## run dfs in helper function
+        def dfs(x,y,visit):
+            if x not in lookup and y not in lookup:
+                return -1
+            if y in lookup[x]:return lookup[x][y]
+            for i in lookup[x]:
+                if i in visit:continue
+                visit.add(i)
+
+                temp = dfs(i, y , visit)
+                
+                if temp == -1:
+                    continue
+                else:return lookup[x][i] * temp
+            return -1
+        res = []
+        ##run through all the formulas to see if can get value
+        for x,y in queries:
+            res.append(dfs(x,y,set()))
+
+        return res
+        
