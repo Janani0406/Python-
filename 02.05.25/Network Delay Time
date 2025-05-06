@@ -1,0 +1,47 @@
+class Solution(object):
+    def networkDelayTime(self, times, n, k):
+        """
+        :type times: List[List[int]]
+        :type n: int
+        :type k: int
+        :rtype: int
+        """       
+        # Step 1️⃣: Build the adjacency list for the graph. 
+        # N*: It is only in one direction this time
+        adj = [[] for _ in range(n+1)]
+        for u, v, w in times:
+            adj[u].append([v, w])
+        # print('adj', adj)
+
+        # Step 2️⃣: Initialize arrays to store shortest distance and number of ways
+        dis = [float("inf")] * (n+1)
+        dis[k] = 0 # The index starts from 0 while the node starts from 1
+        
+        # Step 3️⃣: List to store (time, node)
+        queue = [(0, k)]  # (current time, node)
+        
+        while queue:
+            # Single line to find and pop the element with the smallest time
+            time, node = min(queue, key=lambda x: x[0])
+            queue.remove((time, node))
+            #tuples are non-changable and saves memory than lists
+
+            # print('dis ', dis)
+            # print('(time, node) ', time, node)
+            if len(adj[node])>0:
+                # print('adj[node] ', adj[node])
+
+                # Explore all neighbors of the current node
+                for neighbor, travel_time in adj[node]:
+                    new_time = time + travel_time
+                    # print('neighbor ',neighbor)
+                    # Case 2️⃣: If we found a shorter time to reach the neighbor
+                    if new_time < dis[neighbor]:
+                        dis[neighbor] = new_time
+                        # ways[neighbor] = ways[node]
+                        queue.append((new_time, neighbor))  # Add to the list
+
+        dis.pop(0) # remove the zero-index item
+        for x in dis:
+            if x == float("inf"): return -1
+        return max(dis)
