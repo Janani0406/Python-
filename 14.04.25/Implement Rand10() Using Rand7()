@@ -1,0 +1,22 @@
+class Solution:
+    count = 0
+    x = [1, 2, 3, 4, 5, 6,7, 8,9,10]
+    
+    def rand10(self):
+        """
+        :rtype: int
+        """
+        if Solution.count == 0:
+            y = rand7()
+            Solution.x.remove(y)
+            Solution.count +=1
+            return y
+        
+        if Solution.count == 9:
+            ans = Solution.x[0]
+            Solution.x = [1, 2, 3, 4, 5, 6,7, 8,9,10]
+            Solution.count = 0
+            return ans
+        
+        Solution.count +=1
+        return Solution.x.pop()
