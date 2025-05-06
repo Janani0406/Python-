@@ -1,0 +1,29 @@
+class Solution(object):
+    def findOrder(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: List[int]
+        """
+        adj=defaultdict(list)
+        for course,pre in prerequisites:
+            adj[course].append(pre)
+        visited=[0]*numCourses
+        res=[]
+        for course in range(numCourses):
+            if not self.dfs(course,adj,visited,res):
+                return []
+        return res
+
+    def dfs(self,course,adj,visited,res):
+        if visited[course]==-1:
+            return False
+        if visited[course]==1:
+            return True
+        visited[course]=-1
+        for adjacent in adj[course]:
+            if not self.dfs(adjacent,adj,visited,res):
+                return False
+        visited[course]=1
+        res.append(course)
+        return True
