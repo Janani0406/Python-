@@ -1,0 +1,84 @@
+from collections import deque  
+
+class Solution(object):  
+    def supersequences(self, words):  
+        """  
+        :type words: List[str]  
+        :rtype: List[List[int]]  
+        """  
+        current = 0  
+        codes = [16] * 26  
+        edges = []  
+        duplicates = 0  
+
+        for word in words:  
+            if codes[ord(word[0]) - ord('a')] >= 16:  
+                codes[ord(word[0]) - ord('a')] = current  
+                current += 1  
+            if codes[ord(word[1]) - ord('a')] >= 16:  
+                codes[ord(word[1]) - ord('a')] = current  
+                current += 1  
+            if word[1] == word[0]:  
+                duplicates |= (1 << codes[ord(word[0]) - ord('a')])  
+            edges.append((codes[ord(word[1]) - ord('a')] << 4) | codes[ord(word[0]) - ord('a')])  
+
+        distributions = [[] for _ in range(current + 1)]  
+        self.generate_combinations(current, 0, duplicates, 0, distributions)  
+
+        results = []  
+        for i in range(current + 1):  
+            for state in distributions[i]:  
+                if self.compatible(edges, state):  
+                    output = [0] * 26  
+                    for j in range(26):  
+                        if codes[j] < 16:  
+                            output[j] += 1  
+                            if state & (1 << codes[j]):  
+                                output[j] += 1  
+                    results.append(output)  
+            if results:  
+                results.sort()  
+                return results  
+        return results  
+
+    def generate_combinations(self, current, index, duplicates, state, distributions):  
+        if index == current:  
+            if (state & duplicates) == duplicates:  # Check against duplicates  
+                distributions[bin(state).count('1')].append(state)  
+            return  
+        
+        # Case including the current index  
+        self.generate_combinations(current, index + 1, duplicates, state | (1 << index), distributions)  
+        
+        # Case excluding the current index  
+        self.generate_combinations(current, index + 1, duplicates, state, distributions)  
+
+    def compatible(self, edges, duplicates):  
+        ancestors = [0] * 16  
+        count = [0] * 16  
+
+        for edge in edges:  
+            left = edge >> 4  
+            right = edge & 15  
+            if duplicates & (1 << right):  
+                continue  
+            ancestors[right] |= (1 << left)  
+            count[left] += 1  
+
+        q = deque()  
+        for i in range(16):  
+            if count[i] == 0:  
+                q.append(i)  
+
+        while q:  
+            current = q.popleft()  
+            x = ancestors[current]  
+            while x > 0:  
+                bit = x & -x  
+                ancestor = (bit & -bit).bit_length() - 1  
+                count[ancestor] -= 1  
+                if count[ancestor] == 0:  
+                    q.append(ancestor)  
+                x -= bit  
+
+        return sum(count) == 0
