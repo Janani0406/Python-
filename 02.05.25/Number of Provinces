@@ -1,0 +1,26 @@
+def combine(provinces, node1, node2):
+    if node1 == node2: return provinces
+    for province in provinces:
+        if node1 in province:
+            if node2 in province: return provinces #already together
+            for province2 in provinces:
+                if node2 in province2: 
+                    provinces.remove(province)
+                    provinces.remove(province2)
+                    provinces.append(province + province2)
+                    return provinces
+
+class Solution(object):
+    def findCircleNum(self, isConnected):
+        """
+        :type isConnected: List[List[int]]
+        :rtype: int
+        """
+        provinces = []
+        for i in range(len(isConnected)):
+            provinces.append([i])
+        for i in range(len(isConnected)):
+            for j in range(len(isConnected)):
+                if isConnected[i][j]:
+                    provinces = combine(provinces, i, j)
+        return len(provinces)
