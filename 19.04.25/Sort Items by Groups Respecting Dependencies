@@ -1,0 +1,53 @@
+class Solution(object):
+    def sortItems(self, n, m, group, beforeItems):
+        """
+        :type n: int
+        :type m: int
+        :type group: List[int]
+        :type beforeItems: List[List[int]]
+        :rtype: List[int]
+        """
+        groupMap = defaultdict(list)
+        gAdj = defaultdict(set)
+        iAdj = defaultdict(set)
+
+        for i in range(n):
+            if group[i] == -1:
+                group[i], m = m, m + 1
+
+            groupMap[group[i]].append(i)
+            for b in beforeItems[i]:
+                if group[b] == -1:
+                    group[b], m = m, m + 1
+                    gAdj[group[i]].add(group[b])
+                elif group[i] != group[b]:
+                    gAdj[group[i]].add(group[b])           
+                iAdj[i].add(b)
+
+        visited, path = set(), set()
+        res = []
+
+        def dfs(i, adj):
+            if i in visited:
+                return True
+            if i in path:
+                return False
+            
+            path.add(i)
+            for nei in adj[i]:
+                if not dfs(nei, adj): return False
+            res.append(i)
+            visited.add(i)
+            path.remove(i)
+            return True
+        
+        for i in range(m):
+            if not dfs(i, gAdj): return []
+        groupRes = list(res)
+        res = []
+        visited = set()
+        for group in groupRes:
+            for i in groupMap[group]:
+                if not dfs(i, iAdj): return []
+        
+        return res
