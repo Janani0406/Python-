@@ -1,0 +1,41 @@
+from collections import defaultdict
+
+class Solution:
+    def matrixRankTransform(self, matrix):
+        m, n = len(matrix), len(matrix[0])
+        rank = [0] * (m + n)  # Rank array for rows and columns
+        d = defaultdict(list)  # Dictionary to group elements by value
+        
+        # Step 1: Group all elements by their value
+        for i in range(m):
+            for j in range(n):
+                d[matrix[i][j]].append((i, j))
+        
+        # Find function for Union-Find
+        def find(i):
+            if p[i] != i:
+                p[i] = find(p[i])  # Path compression
+            return p[i]
+        
+        # Union function for Union-Find
+        def union(i, j):
+            pi, pj = find(i), find(j)
+            if pi != pj:  # Union by rank
+                p[pi] = pj
+                newrank[pj] = max(newrank[pi], newrank[pj]) 
+        
+        # Step 2: Process each group of elements with the same value
+        for value in sorted(d):
+            p = list(range(m + n))  # Union-Find parent array
+            newrank = rank[:]  # Copy of the rank array for the current value
+            
+            # Union elements in the same row and column
+            for i, j in d[value]:
+                union(i, m + j)  # Union row i and column j
+            
+            # Update the matrix and ranks for each group
+            for i, j in d[value]:
+                root = find(i)  # Find the root of the set
+                rank[i] = rank[m + j] = matrix[i][j] = newrank[root] + 1
+        
+        return matrix
