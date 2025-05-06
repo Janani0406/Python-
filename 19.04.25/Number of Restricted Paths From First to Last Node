@@ -1,0 +1,26 @@
+class Solution:
+    def countRestrictedPaths(self, n: int, edges: List[List[int]]) -> int:
+        G = [[] for _ in range(n+1)]
+        SRC = n
+        pq = [(0,SRC)]
+        
+        for u,v,w in edges: G[u].append((v,w)), G[v].append((u,w))
+        distToLastNode = [float('inf')] * (n+1)
+    
+        while pq:
+            w_u, u = heapq.heappop(pq)
+            if w_u > distToLastNode[u]: continue
+            distToLastNode[u] = w_u
+            for v, w_v in G[u]:
+                if w_u + w_v < distToLastNode[v]:
+                    distToLastNode[v] = w_u + w_v
+                    heapq.heappush(pq,(w_u + w_v, v))
+        D = [0] * (n+1)
+        D[n] = 1
+        def dfs(u):
+            if D[u]: return D[u]
+            for v,_ in G[u]:
+                if distToLastNode[v] < distToLastNode[u]:
+                    D[u] += dfs(v)
+            return D[u]        
+        return dfs(1) % ( 10 ** 9 + 7)
