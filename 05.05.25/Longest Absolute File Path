@@ -1,0 +1,28 @@
+class Solution(object):
+    def lengthLongestPath(self, input):
+        """
+        :type input: str
+        :rtype: int
+        """
+        directories = input.split("\n")
+        stack = []
+        ans = 0
+        for path in directories:
+            """Find the number of \t in the current path - That will be the level of the current directory"""
+            level = path.count("\t")
+            currentLength = len(path) - level
+            while(stack and len(stack) > level):
+                stack.pop()
+            if level == 0:
+                previousLength = 0
+            else:
+                previousLength = stack[-1]
+            """Finding if the current file is the end of a path """
+            if "." in path: 
+                ans = max(ans, currentLength + previousLength)
+            else:
+                stack.append((previousLength + currentLength + 1))
+
+
+        return ans
+        
