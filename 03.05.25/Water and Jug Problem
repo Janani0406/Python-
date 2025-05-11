@@ -1,0 +1,15 @@
+class Solution(object):
+    def canMeasureWater(self, x, y, target):
+        if x+y<target:
+            return False
+        def gcd(x,y):
+            while(y):
+                x,y=y,x%y
+            return x
+        gcd1=gcd(x,y)
+        if target%gcd1==0:
+            return True
+        else:
+            return False
+        
+        
