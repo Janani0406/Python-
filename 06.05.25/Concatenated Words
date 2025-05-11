@@ -1,0 +1,99 @@
+class Solution(object):
+    def findAllConcatenatedWordsInADict(self, words):
+        """
+        :type words: List[str]
+        :rtype: List[str]
+        """
+        words_set = set(words)
+        def dfs(word, visited):
+            if not word or word in visited:
+                return False
+            
+            visited.add(word)
+            if word in words_set:
+                return True
+
+            for i in range(len(word)):
+                if word[:i] in words_set and dfs(word[i:], visited):
+                    return True
+            
+            return False
+
+        result = []
+        for w in words:
+            for i in range(len(w)):
+                if w[:i] in words_set and dfs(w[i:], set()):
+                    result.append(w)
+                    break
+        
+        return result
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        """dic = set(words)
+        memo = {}
+        
+        def is_suffix(word):
+            
+            if word in memo:
+                return memo[word]
+            memo[word] = False
+            
+            for i in range (1, len(word)):
+                word1 = word[:i]
+                word2 = word[i:]
+
+                if word1 in dic and word2 in dic:
+                    memo[word] = True
+                    return True
+                elif word1 in dic and is_suffix(word2):
+                    memo[word2] = True
+                    return True
+                elif word2 in dic and is_suffix(word1):
+                    memo[word1] = True
+                    return True
+            return False
+        
+        res = []
+        for w in words:
+            if len(w) > 1 and is_suffix(w):
+                res.append(w)
+        
+        return res"""
