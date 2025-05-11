@@ -1,0 +1,21 @@
+class Solution(object):
+    def findFrequentTreeSum(self, root):
+        self.dict = {}
+        
+        def dfs(root):
+            if root is None: return 0
+            
+            left = dfs(root.left)
+            right = dfs(root.right)
+            sumValue = root.val + left + right
+            if sumValue in self.dict:
+                self.dict[sumValue] += 1
+            else:
+                self.dict[sumValue] = 1
+            
+            return sumValue
+        
+        dfs(root)
+
+        maxCount = max(self.dict.values())
+        return [key for key in self.dict if self.dict[key] == maxCount]    
