@@ -1,0 +1,37 @@
+class Solution(object):
+    def findRotateSteps(self, ring, key):
+        """
+        :type ring: str
+        :type key: str
+        :rtype: int
+        """
+        from collections import defaultdict
+
+        n = len(ring)
+        m = len(key)
+
+        # Dictionary to store the indices of each character in the ring
+        char_to_index = defaultdict(list)
+        for i, ch in enumerate(ring):
+            char_to_index[ch].append(i)
+
+        # DP table to store the minimum steps
+        dp = [[float('inf')] * n for _ in range(m + 1)]
+        dp[m] = [0] * n
+
+        # Iterate over the key characters in reverse order
+        for i in range(m - 1, -1, -1):
+            for j in range(n):
+                for k in char_to_index[key[i]]:
+                    # Calculate the minimum distance
+                    dist = min(abs(j - k), n - abs(j - k))
+                    dp[i][j] = min(dp[i][j], dist + dp[i + 1][k])
+        
+        # Calculate the minimum steps starting from the initial position 0
+        result = float('inf')
+        for k in char_to_index[key[0]]:
+            dist = min(k, n - k)
+            result = min(result, dist + dp[1][k])
+        
+        # Add the cost of pressing the center button for each character in the key
+        return result + len(key)
