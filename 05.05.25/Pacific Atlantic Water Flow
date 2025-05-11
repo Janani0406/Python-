@@ -1,0 +1,54 @@
+class Solution(object):
+    def pacificAtlantic(self, heights):
+        """
+        :type heights: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        
+        nr, nc = len(heights), len(heights[0])
+
+        def bfs(q, seen, set1):
+            while q:
+                i, j = q.popleft()        
+                set1.add((i, j))
+                for i2, j2 in [(i-1,j), (i+1,j), (i,j-1), (i,j+1)]:
+                    if i2 < 0 or i2 >= nr or j2 < 0 or j2 >= nc:
+                        continue
+                    if heights[i2][j2] >= heights[i][j] and (i2, j2) not in seen:
+                        q.append((i2, j2))
+                        seen.add((i2, j2))    
+            return set1
+        
+        # pacific
+        pac = set()
+        q = deque()
+        seen = set()
+
+        for j in range(nc):
+            q.append((0, j))
+            seen.add((0, j))
+        for i in range(1, nr):
+            q.append((i, 0))
+            seen.add((i, 0))    
+
+        pac = bfs(q, seen, pac)
+        
+        # atlantic
+        atl = set()
+        q = deque()
+        seen = set()
+
+        for j in range(nc):
+            q.append((nr-1, j))
+            seen.add((nr-1, j))
+        for i in range(nr-1):
+            q.append((i, nc-1))
+            seen.add((i, nc-1))    
+
+        atl = bfs(q, seen, atl)
+
+        ans = []
+        for i, j in pac & atl:
+            ans.append([i, j])
+
+        return ans
