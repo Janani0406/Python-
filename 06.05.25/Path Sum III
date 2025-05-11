@@ -1,0 +1,44 @@
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def pathSum(self, root, targetSum):
+        """
+        :type root: Optional[TreeNode]
+        :type targetSum: int
+        :rtype: int
+        """
+        prefix={0:1}
+
+        def travel(root,k,total):
+            count=0
+            if root is None:
+                return 0
+    
+
+            total+=root.val
+            x=total-k
+
+
+            if x in prefix:
+               count= prefix[x] 
+
+            if total in prefix:
+                prefix[total]+=1
+            else:
+                prefix[total]=1
+
+            count+=travel(root.left,k,total)+travel(root.right,k,total)
+
+            prefix[total]-=1
+
+            return count  
+        c=travel(root,targetSum,0)   
+        return c             
+
+            
+
+        
