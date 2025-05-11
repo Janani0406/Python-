@@ -1,0 +1,14 @@
+class Solution(object):
+    def lexicalOrder(self, n):
+        
+        res = [] 
+        def helper(n, m):
+            upper = m + 9 if m + 9 == 10 *m else m + 10
+            for i in range(m,min(n + 1, upper)):
+                res.append(i)
+                helper(n, i * 10)
+        
+        helper(n, 1)
+        return res
+        
+        
